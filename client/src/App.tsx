@@ -9,6 +9,8 @@ import Rooms from "@/pages/rooms";
 import Tenants from "@/pages/tenants";
 import Payments from "@/pages/payments";
 import Expenses from "@/pages/expenses";
+import Staff from "@/pages/staff";
+import TenantView from "@/pages/tenant-view";
 
 function Router() {
   return (
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/tenants" component={Tenants} />
       <Route path="/payments" component={Payments} />
       <Route path="/expenses" component={Expenses} />
+      <Route path="/staff" component={Staff} />
+      <Route path="/tenant-view/:id" component={TenantView} />
       <Route component={NotFound} />
     </Switch>
   );

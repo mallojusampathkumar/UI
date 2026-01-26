@@ -1,46 +1,29 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { MessageCircle, BellRing } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { mockTenants } from "@/lib/mockData";
+import { FileText, Download, Receipt as ReceiptIcon, UserCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function Payments() {
-  
-  const handleReminder = (phone: string, name: string, amount: number) => {
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
-    const message = `Hello ${name}, this is a gentle reminder that your rent of ₹${amount} is due. Please pay at your earliest convenience.`;
-    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
-    
+  const handleDownloadPDF = (type: string, name: string) => {
     toast({
-      title: "Reminder Sent",
-      description: `WhatsApp template opened for ${name}`,
+      title: "Generating PDF",
+      description: `Downloading ${type} for ${name}...`,
     });
-  };
-
-  const toggleStatus = (id: string, currentStatus: string) => {
-     // In a real app, this would make an API call
-     toast({
-       title: "Status Updated",
-       description: `Payment marked as ${currentStatus === 'paid' ? 'Unpaid' : 'Paid'}`,
-     });
   };
 
   return (
     <DashboardLayout>
       <div className="flex flex-col space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Payments & Rent</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Payments & Audit</h1>
         <p className="text-muted-foreground">
-          Track monthly rent collections and send reminders.
+          Manage rent, partial payments, and download receipts.
         </p>
       </div>
 
@@ -49,52 +32,72 @@ export default function Payments() {
           <TableHeader>
             <TableRow>
               <TableHead>Tenant</TableHead>
-              <TableHead>Room</TableHead>
-              <TableHead>Rent Amount</TableHead>
-              <TableHead>Due Date</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Mark Paid</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>Total Due</TableHead>
+              <TableHead>Paid</TableHead>
+              <TableHead>Remaining</TableHead>
+              <TableHead>Actions</TableHead>
+              <TableHead className="text-right">Receipts</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {mockTenants.map((tenant) => (
               <TableRow key={tenant.id}>
                 <TableCell className="font-medium">
-                  <div>{tenant.name}</div>
-                  <div className="text-xs text-muted-foreground">{tenant.phone}</div>
+                  <div className="flex flex-col">
+                    <span>{tenant.name}</span>
+                    <span className="text-xs text-muted-foreground">Room {tenant.roomNo}</span>
+                  </div>
                 </TableCell>
-                <TableCell>Room {tenant.roomNo}</TableCell>
-                <TableCell>₹5,000</TableCell>
-                <TableCell>{tenant.rentDueDate}</TableCell>
                 <TableCell>
-                  <Badge variant={tenant.status === "paid" ? "default" : "destructive"}>
-                    {tenant.status === "paid" ? "Paid" : "Pending"}
+                  <Badge variant={tenant.status === "paid" ? "default" : tenant.status === "partial" ? "secondary" : "destructive"}>
+                    {tenant.status.toUpperCase()}
                   </Badge>
                 </TableCell>
+                <TableCell>₹{tenant.totalRent}</TableCell>
+                <TableCell className="text-emerald-600 font-medium">₹{tenant.amountPaid}</TableCell>
+                <TableCell className="text-rose-600 font-medium">₹{tenant.totalRent - tenant.amountPaid}</TableCell>
                 <TableCell>
-                   <Switch 
-                     checked={tenant.status === "paid"} 
-                     onCheckedChange={() => toggleStatus(tenant.id, tenant.status)}
-                   />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">Partial Pay</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Add Partial Payment - {tenant.name}</DialogTitle>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label className="text-right">Amount</Label>
+                          <Input type="number" placeholder="Enter amount" className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label className="text-right">Note</Label>
+                          <Input placeholder="Payment note" className="col-span-3" />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button onClick={() => toast({ title: "Success", description: "Payment recorded" })}>
+                          Record Payment
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
                 <TableCell className="text-right">
-                  {tenant.status === "unpaid" && (
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      className="gap-2"
-                      onClick={() => handleReminder(tenant.phone, tenant.name, 5000)}
-                    >
-                      <BellRing className="h-4 w-4" />
-                      Remind
+                  <div className="flex justify-end gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleDownloadPDF("Rent Receipt", tenant.name)}>
+                      <ReceiptIcon className="h-4 w-4" />
                     </Button>
-                  )}
-                  {tenant.status === "paid" && (
-                     <Button variant="ghost" size="sm" disabled className="text-muted-foreground">
-                       Settled
-                     </Button>
-                  )}
+                    <Button variant="ghost" size="icon" onClick={() => handleDownloadPDF("KYC Doc", tenant.name)}>
+                      <FileText className="h-4 w-4" />
+                    </Button>
+                    <Link href={`/tenant-view/${tenant.id}`}>
+                      <Button variant="ghost" size="icon">
+                        <UserCircle className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
