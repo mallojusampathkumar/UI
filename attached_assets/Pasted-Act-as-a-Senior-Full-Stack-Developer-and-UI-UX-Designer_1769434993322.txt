@@ -1,0 +1,67 @@
+Act as a Senior Full-Stack Developer and UI/UX Designer.
+Build a comprehensive "Hostel & PG Management SaaS Dashboard" for PG owners.
+The app should look modern, clean, and professional.
+
+### 1. TECH STACK & STYLE
+- Framework: React (Next.js App Router) or Vite.
+- Styling: Tailwind CSS.
+- Icons: Lucide React.
+- State Management: React Context or Zustand.
+- Theme: Use CSS variables for colors so I can easily change the "Primary Brand Color" in one place.
+    - Default Primary Color: #4F46E5 (Indigo).
+    - Background: Light gray/white for cleanliness.
+    - Text: Dark slate for readability.
+
+### 2. CORE LAYOUT
+- **Sidebar Navigation (Left):**
+  - Dashboard (Home)
+  - Room Management (Manage beds/rooms)
+  - Tenants (List of active tenants)
+  - Payments & Rent (Collection status)
+  - Expenses (Track daily spending)
+  - Reports (Profit/Loss)
+  - Settings (Profile & API Config)
+- **Top Bar:** Search bar, Notification Bell, User Profile Dropdown.
+
+### 3. DASHBOARD VIEW (HOME)
+The main dashboard must show high-level KPIs:
+- **Top Cards:**
+  1. "Total Tenants" (Active count).
+  2. "Occupancy Rate" (Percentage of beds full).
+  3. "Pending Rent" (Total money yet to collect this month - highlighted in Red).
+  4. "Total Revenue" (Collected this month - highlighted in Green).
+- **Recent Activity Feed:** List of recent payments received or new tenants joined.
+- **Occupancy Chart:** A simple visual bar showing filled vs. empty beds.
+
+### 4. KEY FEATURES & LOGIC
+
+#### A. Room Management
+- View rooms as "Cards".
+- Each card shows: Room Number, AC/Non-AC, Total Beds, Available Beds.
+- Visual Indicator: Green dot for "Available", Red dot for "Full".
+- Action: Click a room to see which tenants are inside.
+
+#### B. Tenant Management
+- Table view of all tenants: Name, Phone, Room No, Rent Due Date, Status (Paid/Unpaid).
+- **Add Tenant Form:** Fields for Name, Mobile, Aadhar Number (ID Proof), Joining Date, Security Deposit.
+- **WhatsApp Action:** A button next to each tenant to "Send Message" (opens WhatsApp Web with a pre-filled template).
+
+#### C. Rent & Payments
+- Logic: Rent becomes "Due" on the 1st of every month.
+- **Payment Status:** Toggle button for "Paid" vs "Unpaid".
+- **WhatsApp Reminder:** If status is "Unpaid", show a "Send Reminder" button that triggers a WhatsApp API message template.
+
+#### D. Expense Tracker (Important)
+- A separate tab to log daily hostel expenses.
+- **Categories:** Electricity, Water, Cleaning, Maintenance, Staff Salary, Groceries.
+- **Logic:**
+  - Input: Amount, Date, Category, Description.
+  - Output: Calculate "Total Monthly Expenses" and subtract from "Total Revenue" to show "Net Profit".
+
+### 5. THEME & COLOR CUSTOMIZATION
+- Create a `globals.css` file where the primary color is defined as a variable (e.g., `--primary-color`).
+- All buttons, active links, and charts must use this variable.
+- Explain in the code comments exactly where to change the hex code to swap the entire app's color theme (e.g., from Indigo to Orange).
+
+### 6. DELIVERABLE
+Provide the complete folder structure and the code for the main components (Sidebar, Dashboard Layout, Tenant Table, Expense Form) ensuring they are responsive (mobile-friendly).
