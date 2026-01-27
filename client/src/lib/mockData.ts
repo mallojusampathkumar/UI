@@ -1,4 +1,4 @@
-import { Home, BedDouble, Users, CreditCard, Receipt, BarChart3, Settings, LogOut, Bell, Search, User, UserCircle, Briefcase } from "lucide-react";
+import { Home, BedDouble, Users, CreditCard, Receipt, BarChart3, Settings, LogOut, Bell, Search, User, UserCircle, Briefcase, ShieldCheck } from "lucide-react";
 
 export interface RentPayment {
   id: string;
@@ -7,6 +7,13 @@ export interface RentPayment {
   totalDue: number;
   remainingBalance: number;
   method: string;
+}
+
+export interface KYCDocument {
+  id: string;
+  type: string;
+  status: "Verified" | "Pending" | "Rejected";
+  expiryDate?: string;
 }
 
 export interface Tenant {
@@ -22,6 +29,7 @@ export interface Tenant {
   totalRent: number;
   amountPaid: number;
   paymentHistory: RentPayment[];
+  kyc: KYCDocument[];
 }
 
 export interface Staff {
@@ -33,6 +41,7 @@ export interface Staff {
   advanceTaken: number;
   remainingDues: number;
   paymentHistory: RentPayment[];
+  kyc: KYCDocument[];
 }
 
 export interface Room {
@@ -66,6 +75,10 @@ export const mockTenants: Tenant[] = [
     amountPaid: 5000,
     paymentHistory: [
       { id: "p1", date: "2024-01-01", amountPaid: 5000, totalDue: 5000, remainingBalance: 0, method: "UPI" }
+    ],
+    kyc: [
+      { id: "k1", type: "Aadhar Card", status: "Verified" },
+      { id: "k2", type: "PAN Card", status: "Verified" }
     ]
   },
   { 
@@ -81,6 +94,10 @@ export const mockTenants: Tenant[] = [
     amountPaid: 2000,
     paymentHistory: [
       { id: "p2", date: "2024-01-15", amountPaid: 2000, totalDue: 5000, remainingBalance: 3000, method: "Cash" }
+    ],
+    kyc: [
+      { id: "k3", type: "Aadhar Card", status: "Verified" },
+      { id: "k4", type: "Voter ID", status: "Pending" }
     ]
   },
   { 
@@ -96,6 +113,9 @@ export const mockTenants: Tenant[] = [
     amountPaid: 6000,
     paymentHistory: [
       { id: "p3", date: "2024-01-01", amountPaid: 6000, totalDue: 6000, remainingBalance: 0, method: "UPI" }
+    ],
+    kyc: [
+      { id: "k5", type: "Aadhar Card", status: "Verified" }
     ]
   },
 ];
@@ -111,6 +131,9 @@ export const mockStaff: Staff[] = [
     remainingDues: 13000,
     paymentHistory: [
       { id: "sp1", date: "2024-01-20", amountPaid: 2000, totalDue: 15000, remainingBalance: 13000, method: "Advance" }
+    ],
+    kyc: [
+      { id: "k6", type: "Aadhar Card", status: "Verified" }
     ]
   }
 ];
@@ -131,6 +154,7 @@ export const navItems = [
   { label: "Room Management", icon: BedDouble, href: "/rooms" },
   { label: "Tenants", icon: Users, href: "/tenants" },
   { label: "Staff Management", icon: Briefcase, href: "/staff" },
+  { label: "KYC Vault", icon: ShieldCheck, href: "/kyc-vault" },
   { label: "Payments & Rent", icon: CreditCard, href: "/payments" },
   { label: "Expenses", icon: Receipt, href: "/expenses" },
   { label: "Reports", icon: BarChart3, href: "/reports" },

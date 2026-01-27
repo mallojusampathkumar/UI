@@ -11,6 +11,7 @@ import Payments from "@/pages/payments";
 import Expenses from "@/pages/expenses";
 import Staff from "@/pages/staff";
 import TenantView from "@/pages/tenant-view";
+import KYCVault from "@/pages/kyc-vault";
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/payments" component={Payments} />
       <Route path="/expenses" component={Expenses} />
       <Route path="/staff" component={Staff} />
+      <Route path="/kyc-vault" component={KYCVault} />
       <Route path="/tenant-view/:id" component={TenantView} />
       <Route component={NotFound} />
     </Switch>
